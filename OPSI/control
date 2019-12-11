@@ -1,0 +1,31 @@
+[Package]
+version: 1
+depends: 
+incremental: False
+
+[Product]
+type: localboot
+id: ica-freebasic
+name: ICA-FreeBASIC
+description: FreeBASIC-1.07.1-win32
+
+advice: 
+version: 1.07.1
+priority: 0
+licenseRequired: False
+productClasses: 
+setupScript: setup.opsiscript
+uninstallScript: uninstall.opsiscript
+updateScript: 
+alwaysScript: 
+onceScript: 
+customScript: 
+userLoginScript:
+
+[Changelog]
+ica-freebasic (1.07.1-1) stable; urgency=low
+
+	* initial: created by opsi-setup-detector
+
+ -- opsisetupdetector.exe <info@uib.de>  12/11/2019 13:14:26
+

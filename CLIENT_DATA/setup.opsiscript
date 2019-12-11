@@ -1,0 +1,151 @@
+; ----------------------------------------------------------------
+; all changes to the original script are:
+; Copyright (c) John Kuras 2019
+; changes made by John Kuras may be copied per WTFPL
+; the origial script is:
+; This sourcecode is owned by uib
+; and published under the Terms of the General Public License.
+; credits: http://www.opsi.org/en/credits/
+; ----------------------------------------------------------------
+
+;****************************************
+; SETUPTYPE      nsis
+;****************************************
+; PRODUCTID      ica-freebasic
+; SETUPFILE      FreeBASIC-1.07.1-win32.exe
+;****************************************
+; LICENSE        false     
+; PRODUCTDESC    FreeBASIC-1.07.1-win32
+
+; PRODUCTNAME    ICA-FreeBASIC
+; PRODUCTSIZE    65 MB
+; PRODUCTVER     1.07.1
+;****************************************
+; SETUPSCRIPT    setup.opsiscript
+; UNINSSCRIPT    uninstall.opsiscript
+;****************************************
+; MSIID          
+; USE-MST        
+; INSTALLDIR     \Program Files\FreeBASIC
+;****************************************
+; TIMESTAMP      12/11/2019 13:14:26
+;****************************************
+
+[Actions]
+requiredWinstVersion >= "4.11.4.3"
+ScriptErrorMessages = false
+
+DefVar $SetupType$
+DefVar $ProductId$ 
+DefVar $Setupfile$ 
+DefVar $InstallDir$
+DefVar $MinimumSpace$
+DefVar $ExitCode$
+DefVar $ErrorMsg$
+DefVar $LicenseRequired$
+DefVar $LicenseKey$
+DefVar $LicensePool$
+DefVar $MsiId$
+DefVar $NsisInstallBatch$
+DefVar $LogDir$
+
+Set $LogDir$ = "%opsiLogDir%"
+
+include_append "%ScriptPath%\check_nsis_exitcode.opsiscript"
+
+; ----------------------------------------------------------------
+Set $SetupType$       = "nsis"
+; ----------------------------------------------------------------
+
+; $ProductId$ is the name of the product in opsi, only lower letters, no umlauts, no white spaces, use '-' as a seperator
+Set $ProductId$       = "ica-freebasic"
+Set $Setupfile$       = "FreeBASIC-1.07.1-win32.exe"
+; the path where we find the product after the installation
+Set $InstallDir$      = "c:\Program Files\FreeBASIC"
+Set $LicenseRequired$ = "false"
+Set $LicensePool$     = "p_" + $ProductId$
+Set $MsiId$           = ""
+Set $MinimumSpace$    = "65 MB"
+; ----------------------------------------------------------------
+; ----------------------------------------------------------------
+
+if not(HasMinimumSpace ("%SystemDrive%", $MinimumSpace$))
+   LogError "Not enough space on %SystemDrive%, " + $MinimumSpace$ + " on drive %SystemDrive% needed for " + $ProductId$
+   isFatalError "No Space"
+   ; Stop process and set installation status to failed
+else
+   comment "Show product picture"
+   ShowBitmap "%ScriptPath%\" + $ProductId$ + ".png" $ProductId$
+
+   if FileExists("%ScriptPath%\delsub.opsiscript")
+      comment "Start uninstall sub section"
+      Sub "%ScriptPath%\delsub.opsiscript"
+   endif
+   
+   Message "Installing " + $ProductId$ + " ..."
+
+   if ($SetupType$ = "nsis")
+      Set $NsisInstallBatch$ = "%ScriptPath%\FreeBASIC-1.07.1-win32.exe /S"
+      if not ($InstallDir$ = '')
+         Set $NsisInstallBatch$ = $NsisInstallBatch$ + ' /D="' + $InstallDir$ + '"'
+      endif
+   endif
+   
+   comment "Start FreeBasic setup program"
+   ChangeDirectory "%SCRIPTPATH%"
+   ;----------------------------------------------
+   Winbatch_install_nsis
+   ;----------------------------------------------
+   Sub_check_exitcode
+   comment "Install FreeBasic IDE"
+   Files_install
+   LinkFolder_install
+endif
+
+
+; ----------------------------------------------------------------
+; install section
+; ----------------------------------------------------------------
+
+[Winbatch_install_nsis]
+;NSIS Nullsoft Scriptable Install System 
+$NsisInstallBatch$
+
+; ----------------------------------------------------------------
+; Files section
+; ----------------------------------------------------------------
+
+[Files_install]
+; Recursively copy files into the installation directory:
+;
+ copy -s "%ScriptPath%\files\*.*" "$InstallDir$"
+
+[LinkFolder_install]
+;
+; Example of creating an shortcut to the installed exe in AllUsers startmenu:
+;
+ set_basefolder common_programs
+ set_subfolder "FreeBASIC"
+;
+ set_link
+ 	name: FreeBasic IDE
+ 	target: $InstallDir$\fbide.exe
+; 	parameters:
+ 	working_dir: $InstallDir$
+; 	icon_file: $InstallDir$\fbide.exe
+; 	icon_index: 1
+ end_link
+;
+ set_link
+ 	name: FreeBasic Help
+ 	target: $InstallDir$\IDE\FB-manual-0.23.0.chm
+; 	parameters:
+ 	working_dir: $InstallDir$
+; 	icon_file: $InstallDir$\passwin.exe
+; 	icon_index: 1
+ end_link
+
+; ----------------------------------------------------------------
+; ----------------------------------------------------------------
+; ----------------------------------------------------------------
+
