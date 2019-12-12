@@ -1,14 +1,12 @@
 [Package]
 version: 1
 depends: 
-incremental: False
 
 [Product]
 type: localboot
 id: ica-freebasic
 name: ICA-FreeBASIC
 description: FreeBASIC-1.07.1-win32
-
 advice: 
 version: 1.07.1
 priority: 0
@@ -20,7 +18,7 @@ updateScript:
 alwaysScript: 
 onceScript: 
 customScript: 
-userLoginScript:
+userLoginScript: 
 
 [Changelog]
 ica-freebasic (1.07.1-1) stable; urgency=low
