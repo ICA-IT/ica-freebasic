@@ -30,6 +30,7 @@
 
 # Executables
 *.exe
+*.EXE
 *.out
 *.app
 *.i*86
@@ -50,3 +51,18 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+
+# other opsi related files
+*.opsi
+*.md5
+*.zsync
+*.cab
+*.wim
+*.msi
+*.msp
+*.msu
+*.ref
+*.zip
+*.com
+*.sys
+*.res
